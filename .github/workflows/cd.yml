@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
+  placeholder-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder deployment step
+      - name: Deployment placeholder
         run: echo "Deployment pipeline - to be configured"
