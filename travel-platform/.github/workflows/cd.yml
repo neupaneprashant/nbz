@@ -1,0 +1,12 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder deployment step
+        run: echo "Deployment pipeline - to be configured"
