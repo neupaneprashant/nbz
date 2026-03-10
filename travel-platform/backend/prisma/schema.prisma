@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TripStatus {
+  PLANNING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum TripItemType {
+  FLIGHT
+  HOTEL
+  ACTIVITY
+  RESTAURANT
+  TRANSPORT
+  NOTE
+  OTHER
+}
+
+enum InquiryStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  trips            Trip[]
+  flightSearchLogs FlightSearchLog[]
+  bookingInquiries BookingInquiry[]
+}
+
+model Destination {
+  id            String   @id @default(cuid())
+  name          String
+  country       String
+  description   String
+  imageUrl      String?
+  bestSeason    String?
+  averageBudget Float?
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  trips Trip[]
+}
+
+model Trip {
+  id             String     @id @default(cuid())
+  userId         String
+  destinationId  String?
+  name           String
+  startDate      DateTime?
+  endDate        DateTime?
+  status         TripStatus @default(PLANNING)
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  destination      Destination?     @relation(fields: [destinationId], references: [id])
+  tripItems        TripItem[]
+  bookingInquiries BookingInquiry[]
+}
+
+model TripItem {
+  id          String       @id @default(cuid())
+  tripId      String
+  itemType    TripItemType
+  title       String
+  description String?
+  dayNumber   Int          @default(1)
+  startTime   String?
+  endTime     String?
+  location    String?
+  cost        Float?
+  currency    String?      @default("USD")
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model FlightSearchLog {
+  id            String   @id @default(cuid())
+  userId        String?
+  origin        String
+  destination   String
+  departureDate DateTime
+  returnDate    DateTime?
+  passengers    Int      @default(1)
+  searchedAt    DateTime @default(now())
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model BookingInquiry {
+  id          String        @id @default(cuid())
+  userId      String
+  tripId      String?
+  message     String
+  phoneNumber String?
+  status      InquiryStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip        Trip?         @relation(fields: [tripId], references: [id], onDelete: SetNull)
+}
