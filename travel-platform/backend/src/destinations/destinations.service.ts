@@ -8,7 +8,10 @@ import { UpdateDestinationDto } from './dto/update-destination.dto';
 export class DestinationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(filters?: { country?: string; featured?: boolean }): Promise<Destination[]> {
+  findAll(filters?: {
+    country?: string;
+    featured?: boolean;
+  }): Promise<Destination[]> {
     return this.prisma.destination.findMany({
       where: {
         country: filters?.country
@@ -21,7 +24,9 @@ export class DestinationsService {
   }
 
   async findById(id: string): Promise<Destination> {
-    const destination = await this.prisma.destination.findUnique({ where: { id } });
+    const destination = await this.prisma.destination.findUnique({
+      where: { id },
+    });
     if (!destination) {
       throw new NotFoundException('Destination not found');
     }
@@ -44,6 +49,9 @@ export class DestinationsService {
   }
 
   getFeatured(): Promise<Destination[]> {
-    return this.prisma.destination.findMany({ where: { featured: true }, take: 6 });
+    return this.prisma.destination.findMany({
+      where: { featured: true },
+      take: 6,
+    });
   }
 }

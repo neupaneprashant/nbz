@@ -24,7 +24,8 @@ export class DestinationsController {
   @Get()
   findAll(
     @Query('country') country?: string,
-    @Query('featured', new ParseBoolPipe({ optional: true })) featured?: boolean,
+    @Query('featured', new ParseBoolPipe({ optional: true }))
+    featured?: boolean,
   ) {
     return this.destinationsService.findAll({ country, featured });
   }

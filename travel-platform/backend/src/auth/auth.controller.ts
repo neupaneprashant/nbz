@@ -1,4 +1,10 @@
-import { Controller, Get, Post, Body, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { GetUser } from './decorators/get-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { AuthService } from './auth.service';
@@ -32,7 +38,13 @@ export class AuthController {
       throw new UnauthorizedException('User not found');
     }
 
-    const { passwordHash: _passwordHash, ...safeUser } = user;
-    return safeUser;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }

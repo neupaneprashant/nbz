@@ -13,7 +13,13 @@ export class UsersController {
       throw new UnauthorizedException('User not found');
     }
 
-    const { passwordHash: _passwordHash, ...safeUser } = user;
-    return safeUser;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }
